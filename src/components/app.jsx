@@ -5,18 +5,23 @@ import {SpaceX} from "../api/spacex";
 
 function App(){
 
-    const [launches, setLaunches] = useState([]);
+    const [launchpads, setLaunchpads] = useState([]);
+    const [activePadId, setActivePadId] = useState(null);
     const spacex = new SpaceX();
     useEffect(()=>{
-        spacex.launches().then(data =>{
-            setLaunches(data)
-        })
+        spacex.launchpads()
+            .then(data => setLaunchpads(data))
+            .catch(err => console.error("Failed to load launchpads:", err));
     },[])
 
     return(
         <main className='main'>
-            <LaunchList launches = {launches}/>
-            <Map/>
+            <LaunchList
+                launchpads={launchpads}
+                activePadId={activePadId}
+                onHover={setActivePadId}
+            />
+            <Map launchpads={launchpads} activePadId={activePadId}/>
         </main>
     )
 }
